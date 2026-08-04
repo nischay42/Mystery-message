@@ -23,7 +23,7 @@ export async function POST(request: Request) {
   try {
     const updatedUser = await prisma.user.update({
       where: { id: userId },
-      data: { isAcceptingMessage: acceptMessages },
+      data: { isAcceptingMessages: acceptMessages },
     });
 
     if (!updatedUser) {
@@ -89,9 +89,9 @@ export async function GET(request: Request) {
     return Response.json(
       {
         success: true,
-        isAccepingMessages: foundUser.isAcceptingMessage,
+        isAcceptingMessages: foundUser.isAcceptingMessages,
       },
-      { status: 404 },
+      { status: 200 },
     );
   } catch (error) {
     console.log("Failed to update user status to accept messages");
