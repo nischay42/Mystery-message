@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server'
-// import type { NextRequest } from 'next/server'
 export { default } from "next-auth/middleware"
 import { getToken } from 'next-auth/jwt'
 
@@ -14,7 +13,7 @@ export async function proxy(request: NextRequest) {
       url.pathname.startsWith('/sign-in') ||
       url.pathname.startsWith('/sign-up') ||
       url.pathname.startsWith('/verify') ||
-      url.pathname.startsWith('/')
+      url.pathname === '/'
     )
     ) {
       return NextResponse.redirect(new URL('/dashboard', request.url))
@@ -33,6 +32,7 @@ export const config = {
     '/sign-up',
     '/',
     '/dashboard/:path*',
-    '/verify'
+    '/verify',
+    '/u'
   ],
 }

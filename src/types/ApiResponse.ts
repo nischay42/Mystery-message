@@ -1,8 +1,8 @@
-import { MessageSchema } from "../../generated/prisma/client"
+import { Message } from "../../generated/prisma/client"
 
 export interface ApiResponse {
   success: boolean;
   message: string;
-  isAccesptingMessages?: boolean;
-  messages?: Array<MessageSchema>
+  isAcceptingMessages?: boolean;
+  messages?: Array<Message>
 }
