@@ -20,7 +20,7 @@ model User {
   verifyCode         String
   verifyCodeExpiry   DateTime
   isVerified         Boolean?  @default(false)
-  isAcceptingMessage Boolean?  @default(true)
+  isAcceptingMessages Boolean?  @default(true)
   messages           Message[]
 }
 
