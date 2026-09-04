@@ -22,7 +22,7 @@ Mystery Message is a full-stack anonymous messaging platform. Users can create a
 - NextAuth for authentication
 - Prisma ORM with PostgreSQL
 - Resend for verification emails
-- Google Gemini and Groq SDKs for AI features
+- Cloudflare Workers AI for AI features
 - Zod and React Hook Form for validation
 - Axios and Sonner for client-side requests and notifications
 
@@ -59,7 +59,7 @@ mistrymessage/
 - npm
 - A PostgreSQL database
 - A Resend account and API key
-- A Google Gemini API key
+- A Cloudflare Workers AI API key
 - A secure NextAuth secret
 
 ## Getting Started
@@ -85,7 +85,8 @@ Create a `.env` file in the project root:
 DATABASE_URL="your-postgresql-connection-string"
 NEXTAUTH_SECRET="your-nextauth-secret"
 RESEND_API_KEY="your-resend-api-key"
-GEMINI_API_KEY="your-gemini-api-key"
+CF_API_TOKEN="your-cloudflare-api-key"
+CF_ACCOUNT_ID="your-cloudflare-account-id"
 ```
 
 Use your own credentials and keep the `.env` file private.
