@@ -22,7 +22,6 @@ import { useState } from "react";
 import axios, { AxiosError } from "axios";
 import { ApiResponse } from "@/types/ApiResponse";
 import { toast } from "sonner";
-import { useCompletion } from '@ai-sdk/react'
 
 const specialChar = '||';
 
@@ -37,17 +36,8 @@ const sendMessage = () => {
   const [isLoading, setIsLoading] = useState(false)
   const params = useParams<{ username: string }>();
   const username = params.username;
-
-  const {
-    complete,
-    completion,
-    isLoading: isSuggestLoading,
-    error
-  } = useCompletion({
-    api: '/api/suggest-messages',
-    initialCompletion: initialMessageString,
-    streamProtocol: 'text'
-  })
+  const [isSuggestLoading, setIsSuggestLoading] = useState(false)
+  const [suggestedMessages, setSuggestedMessages] = useState(initialMessageString)
 
   const form = useForm<z.infer<typeof messageSchema>>({
       resolver: zodResolver(messageSchema)
@@ -79,10 +69,23 @@ const sendMessage = () => {
   }
 
   const fetchSuggestedMessages = async () => {
-   try {
-      complete('')      
+    setIsSuggestLoading(true)
+    try {
+      const response = await fetch('/api/suggest-messages', { method: 'POST' });
+      
+      if (!response.ok) {
+        throw new Error('Failed to fetch suggested messages');
+      }
+      
+      const data = await response.json();
+      const messages = data.text.split('||').map((msg: string) => msg.trim()).filter(Boolean).join('||');  
+      setSuggestedMessages(messages);
+      toast.success('Suggested messages loaded!');
     } catch (error) {
       console.error('Error fetching messages:', error);
+      toast.error('Failed to load suggested messages');
+    } finally {
+      setIsSuggestLoading(false)
     }
   }  
   return (
@@ -127,7 +130,7 @@ const sendMessage = () => {
         <div className="space-y-2">
           <Button
             onClick={fetchSuggestedMessages}
-            className="my-4 bg-gray-900 rounded-sm px-3 py-4"
+            className="my-4 bg-gray-900 rounded-sm px-3 py-4 cursor-pointer"
             disabled={isSuggestLoading}
           >
             Suggest Messages
@@ -139,22 +142,19 @@ const sendMessage = () => {
             <h3 className="text-xl font-semibold">Messages</h3>
           </CardHeader>
           <CardContent className="flex flex-col space-y-4">
-            {error ? (
-              <p className="text-red-500">{error.message}</p>
-            ) : (
-              parseStringMessages(completion)
+            {
+              parseStringMessages(suggestedMessages)
                 .filter(msg => msg.trim() !== '')  
                 .map((message, index) => (
-                <Button
+                <button
                   key={index}
-                  variant="outline"
-                  className="mb-2"
+                  className="border rounded-sm p-2 cursor-pointer"
                   onClick={() => handleMessageClick(message.trim())}
                 >
                   {message}
-                </Button>
+                </button>
               ))
-            )}
+            }
           </CardContent>
         </Card>
       </div>
